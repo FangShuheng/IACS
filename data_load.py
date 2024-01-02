@@ -36,7 +36,7 @@ def np_save_if_not_existed(path, saved_data):
         np.save(path, saved_data_numpy)
 
 
-def load_twitter_graphs(args, data_dir: str,return_attr_info = False, use_embed_feats = False):
+def load_twitter_graphs(args, data_dir: str, use_embed_feats = False):
     raw_data_list = list()
     attr_info_list=list()
     for file_name in os.listdir(data_dir):
@@ -52,13 +52,13 @@ def load_twitter_graphs(args, data_dir: str,return_attr_info = False, use_embed_
                 feat_dict[f_id] = feat_name
             feat_names.close()
 
-        # load input feats
+        # load attributes
         node_id_dict = dict()
         node_attrs_dict=dict()
         node_cnt = 0
         with open(os.path.join(data_dir, "{}.feat".format(ego_node_id)), 'r') as feat:
             lines = feat.readlines()
-            feats = np.zeros(shape=(len(lines) + 1, len(feat_dict)), dtype=float) # why +1? add ego node
+            feats = np.zeros(shape=(len(lines) + 1, len(feat_dict)), dtype=float)
             for line in lines:
                 tokens = line.strip().split()
                 node_attrs_dict[node_cnt]=list()
@@ -86,14 +86,12 @@ def load_twitter_graphs(args, data_dir: str,return_attr_info = False, use_embed_
 
         # load graph edges:
         edge_list = list()
-
         with open(os.path.join(data_dir, "{}.edges".format(ego_node_id)), "r") as edges:
             for line in edges:
                 tokens = line.strip().split()
                 src, dst = int(tokens[0]), int(tokens[1])
                 edge_list.append((node_id_dict[src], node_id_dict[dst]))
             edges.close()
-
             ego_edges = [(node_id_dict[ego_node_id], k) for k in node_id_dict.values()]
             edge_list += ego_edges
 
@@ -110,13 +108,13 @@ def load_twitter_graphs(args, data_dir: str,return_attr_info = False, use_embed_
 
         graph = nx.Graph()
         graph.add_edges_from(edge_list)
+        # filter those graphs that are not connected
         if not nx.is_connected(graph):
             print('skip')
             continue
         print("# of nodes/edges:", graph.number_of_nodes(), graph.number_of_edges(),"id:",ego_node_id)
 
         embed_feats_path=data_dir+"/emb/egotwitter_enhanced{}.emb.npy".format(ego_node_id)
-
         embed_feats = torch.from_numpy(np.load(embed_feats_path,allow_pickle=True))
         x_embed_feats = torch.zeros(size=(graph.number_of_nodes(), embed_feats.size(-1)), dtype=torch.float)
         for _,node in enumerate(node_id_dict.keys()):
@@ -131,8 +129,6 @@ def load_twitter_graphs(args, data_dir: str,return_attr_info = False, use_embed_
         raw_data_list.append(raw_data)
         attr_info_list.append((node_attrs_dict, edge_list))
     print(len(raw_data_list))
-    if return_attr_info:
-        return raw_data_list,  attr_info_list
     return raw_data_list
 
 def load_arxiv(args):
@@ -197,12 +193,9 @@ def load_arxiv(args):
             res_graph=nx.Graph()
             edge_list = [(node_id_dict[src], node_id_dict[dst]) for (src, dst) in edge_list]
             res_graph.add_edges_from(edge_list)
-
             node_list=list(res_graph.nodes())
             node_list=[node_new2old[l] for n_id,l in enumerate(res_graph.nodes)]
             feats=data.x[node_list].numpy()
-            #import pdb;pdb.set_trace()
-
             communities=list()
             candidate_query_number=0
             for k, val in glob_communities.items():#key:label value:node id

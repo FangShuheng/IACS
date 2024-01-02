@@ -95,7 +95,7 @@ class IACSEncoder(nn.Module):
         elif self.pool_type in ["AVG", "avg"]:
             context = torch.mean(x_hid, dim=0, keepdim=False)
             context = torch.mean(x_hid, dim=0, keepdim=False)
-        elif self.pool_type in ["Att", "att"]: #todo
+        elif self.pool_type in ["Att", "att"]: 
             Q = self.LQ(x_hid)
             V = self.LV(x_hid)
             K = self.LK(x_hid)
@@ -143,7 +143,7 @@ class CSIACSComp(nn.Module):
             raise NotImplementedError("Unsupported IACS Decoder type!")
 
     def forward(self, support_batch, query_batch, mode='spt'):
-        context = self.encoder(support_batch) #137,128
+        context = self.encoder(support_batch)
         if mode=='spt':
             hid_spt, y_spt, mask_spt=self.decoder(context, support_batch)
             return hid_spt, y_spt, mask_spt

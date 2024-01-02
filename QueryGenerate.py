@@ -133,12 +133,12 @@ class RawGraphWithCommunity(object):
                 self.community_attribute_index[community_id] = freq_attr.difference(all_freq_attrs)
                 self.query_attributes |= self.community_attribute_index[community_id]
             for community_id, community in enumerate(self.communities_pre):
-                if community_id in self.community_attribute_index.keys():#if community has no attribute, filter the community
+                if community_id in self.community_attribute_index.keys():
                     self.communities[community_id]=self.communities_pre[community_id]
                 else:
-                    for i,nodeid in enumerate(self.communities_pre[community_id]): #if community has no attribute, filter the community and delete self.query_index
+                    for i,nodeid in enumerate(self.communities_pre[community_id]):
                         del self.query_index_pre[nodeid]
-            for idx,node in enumerate(self.query_index_pre): #filter the community where the community size is too large (almost entire graph)
+            for idx,node in enumerate(self.query_index_pre):
                 self.query_index[node]=self.query_index_pre[node]
             self.num_communities=len(self.communities)
             print("num communities: {}".format(self.num_communities))
@@ -157,7 +157,7 @@ class RawGraphWithCommunity(object):
             self.community_attribute_index = dict()
             self.query_attributes = set()
             self.communities=self.communities_pre
-            for idx,node in enumerate(self.query_index_pre): #filter the community where the community size is too large (almost entire graph)
+            for idx,node in enumerate(self.query_index_pre):
                 self.query_index[node]=self.query_index_pre[node]
             self.num_communities=len(self.communities)
             print("num communities: {}".format(self.num_communities))
@@ -177,7 +177,7 @@ class RawGraphWithCommunity(object):
         querys.append(query)
         neg = list(set(range(self.graph.number_of_nodes())).difference(self.query_index[query]))
         pos = list(set(pos).difference(querys))
-        if num_neg<=1:
+        if num_neg<=1:#ratio
             masked_pos = random.sample(pos, k = min(math.ceil(num_pos*(len(pos)+len(neg))), len(pos)))
             masked_neg = random.sample(neg, k = min(math.ceil(num_neg*(len(pos)+len(neg))), len(neg)))
         else:#number
@@ -188,14 +188,14 @@ class RawGraphWithCommunity(object):
         else:
             for community_id, community in enumerate(self.communities):
                 if query in self.communities[community_id]:
-                    query_attributes = random.sample(self.community_attribute_index[community_id], k=num_query_attribute)#637
+                    query_attributes = random.sample(self.community_attribute_index[community_id], k=num_query_attribute)
 
         return querys, pos, neg, masked_pos, masked_neg, query_attributes
 
-    def get_communities(self, task_size, num_shots):#todo
+    def get_communities(self, task_size, num_shots):
         assert task_size <= len(self.query_index), "task size surpass the max number of queries."
         assert task_size > num_shots, "num shots surpasses the task size"
-        queries = random.choices(list(self.query_index.keys()),k=task_size)#117,128
+        queries = random.choices(list(self.query_index.keys()),k=task_size)
         return queries
 
 
