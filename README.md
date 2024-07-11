@@ -30,6 +30,43 @@ python main.py    \
        --data_dir [your/own/directory/containing/twitter/dataset (i.e. /home/shfang/data/twitter/twitter)]  \
 ```
 
+### Key Parameters
+All the parameters with their default value are in main.py
+
+| name | type   | description |
+| ----- | --------- | ----------- |
+| num_layers  | int    | number of GNN layers    |
+| gnn_type | string |  type of GNN layer (GCN, GAT, SAGE)     |
+| film_type | string | Context FiLM Layer Type    |
+| epochs  | int   | number of training epochs  |
+| finetune_epochs | Float   | number of fintuning epochs  |
+| task_size  | int   | total number of query nodes in one task  |
+| num_shots  | int   | number of query nodes for finetuning in one task |
+| use_embed_feats  | bool   | use attributes of not |
+| data_set  | string   | dataset |
+| train_task_num  | int   | number of training tasks |
+| valid_task_num  | int   | number of valid tasks |
+| test_task_num  | int   | number of testing tasks |
+| num_pos  | float   | maximum proportion of positive instances for each query node |
+| num_neg  | float   | maximum proportion of negative instances for each query node |
+
+
+
+### Project Structure
+```
+main.py         # begin here
+data_load.py         # generate tasks for different dataset
+QueryDataset.py  # extract query from subgraphs
+train_eval.py                       # train, valid and test for IACS
+Model.py                      # model for IACS
+Layer.py                      # GATBias layer and FiLM layer
+Loss.py
+```
+
+The Arxiv/Amazon-2m datasets are from [OGB](https://ogb.stanford.edu/docs/nodeprop/);
+The Cora/Citeseer/Reddit datasets are from PyTorch_Geometric;
+The Facebook/Twitter datasets are from [SNAP] (https://snap.stanford.edu/data).
+
 
 ### Contact
 Open an issue or send email to shfang@se.cuhk.edu.hk if you have any problem
