@@ -221,7 +221,8 @@ class RawGraphWithCommunity(object):
 
         y = torch.zeros(size=(self.graph.number_of_nodes(),), dtype=torch.float)
         y[pos] = 1
-
+        y[query] = 1
+ 
         query = torch.LongTensor(query)
         query_index = torch.zeros_like(query, dtype=torch.long)
         if len(query_attributes)==0:
