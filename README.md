@@ -72,4 +72,13 @@ The Facebook/Twitter datasets are from [SNAP] (https://snap.stanford.edu/data).
 Open an issue or send email to shfang@se.cuhk.edu.hk if you have any problem
 
 ### Cite Us
-
+@article{fang2024inductive,
+  title={Inductive Attributed Community Search: To Learn Communities Across Graphs},
+  author={Fang, Shuheng and Zhao, Kangfei and Rong, Yu and Li, Zhixun and Yu, Jeffrey Xu},
+  journal={Proceedings of the VLDB Endowment},
+  volume={17},
+  number={10},
+  pages={2576--2589},
+  year={2024},
+  publisher={VLDB Endowment}
+}
